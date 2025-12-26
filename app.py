@@ -4,30 +4,29 @@ import google.generativeai as genai
 st.set_page_config(page_title="FitFocus AI", page_icon="🏋️‍♂️")
 st.title("🏋️‍♂️ FitFocus AI Trainer")
 
-# Tenta carregar a chave secreta
+# Configuração da Chave
 if "GOOGLE_API_KEY" in st.secrets:
     genai.configure(api_key=st.secrets["GOOGLE_API_KEY"])
 else:
-    st.error("Chave API não encontrada nos Secrets!")
+    st.error("Configure a GOOGLE_API_KEY nos Secrets do Streamlit.")
     st.stop()
 
-# Nome do modelo (vamos tentar o nome padrão sem o prefixo desta vez)
-MODEL_NAME = 'gemini-1.5-flash'
-
-prompt_usuario = st.text_input("Qual o seu objetivo de hoje?", placeholder="Ex: Treino de pernas para iniciante")
+# Entrada do usuário
+objetivo = st.text_input("Qual o seu objetivo de hoje?", placeholder="Ex: Treino de glúteos e pernas")
 
 if st.button("Gerar Treino"):
-    if not prompt_usuario:
-        st.warning("Por favor, digite seu objetivo.")
-    else:
-        with st.spinner('Criando seu treino personalizado...'):
+    if objetivo:
+        with st.spinner('Consultando o treinador...'):
             try:
-                # Inicializa o modelo
-                model = genai.GenerativeModel(MODEL_NAME)
-                # Gera o conteúdo
-                response = model.generate_content(f"Aja como um treinador FitFocus especialista: {prompt_usuario}")
-                st.markdown("### Seu Treino:")
-                st.write(response.text)
+                # Mudamos para o nome simples do modelo
+                model = genai.GenerativeModel('gemini-1.5-flash')
+                
+                # O prompt que envia o seu comando
+                response = model.generate_content(f"Aja como um treinador FitFocus especialista e gere: {objetivo}")
+                
+                st.markdown("---")
+                st.markdown(response.text)
             except Exception as e:
-                st.error(f"Erro ao falar com a IA: {e}")
-                st.info("Dica: Verifique se sua API Key está correta e se o modelo 'gemini-1.5-flash' está disponível na sua região.")
+                st.error(f"Ops! Algo deu errado: {e}")
+    else:
+        st.warning("Por favor, digite seu objetivo primeiro.")
