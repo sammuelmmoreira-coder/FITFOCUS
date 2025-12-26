@@ -1,0 +1,5 @@
+{
+  "name": "FitFocus AI Trainer",
+  "description": "A smart gym companion that organizes 5-day workout splits, tracks daily progress, and uses AI to provide muscle group analysis and exercise tips.",
+  "requestFramePermissions": []
+}
