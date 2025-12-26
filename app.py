@@ -1,32 +1,30 @@
 import streamlit as st
 import google.generativeai as genai
 
-st.set_page_config(page_title="FitFocus AI", page_icon="🏋️‍♂️")
+# Título do seu App
 st.title("🏋️‍♂️ FitFocus AI Trainer")
 
-# Configuração da Chave
+# 1. Tenta pegar a chave que você salvou no Passo 1
 if "GOOGLE_API_KEY" in st.secrets:
     genai.configure(api_key=st.secrets["GOOGLE_API_KEY"])
 else:
-    st.error("Configure a GOOGLE_API_KEY nos Secrets do Streamlit.")
+    st.error("Faltou configurar a chave no Streamlit (Passo 1)!")
     st.stop()
 
-# Entrada do usuário
-objetivo = st.text_input("Qual o seu objetivo de hoje?", placeholder="Ex: Treino de glúteos e pernas")
+# 2. Campo para você digitar
+pergunta = st.text_input("Qual o seu objetivo de treino hoje?")
 
+# 3. Botão para gerar
 if st.button("Gerar Treino"):
-    if objetivo:
-        with st.spinner('Consultando o treinador...'):
-            try:
-                # Mudamos para o nome simples do modelo
-                model = genai.GenerativeModel('gemini-1.5-flash')
-                
-                # O prompt que envia o seu comando
-                response = model.generate_content(f"Aja como um treinador FitFocus especialista e gere: {objetivo}")
-                
-                st.markdown("---")
-                st.markdown(response.text)
-            except Exception as e:
-                st.error(f"Ops! Algo deu errado: {e}")
+    if pergunta:
+        try:
+            # Usando o nome direto do modelo para evitar o erro 404
+            model = genai.GenerativeModel('gemini-1.5-flash')
+            response = model.generate_content(pergunta)
+            
+            st.markdown("---")
+            st.write(response.text)
+        except Exception as e:
+            st.error(f"Erro do Google: {e}")
     else:
-        st.warning("Por favor, digite seu objetivo primeiro.")
+        st.warning("Escreva algo primeiro!")
